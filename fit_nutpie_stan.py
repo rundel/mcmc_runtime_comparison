@@ -4,32 +4,33 @@ from fetch_data import create_arrays
 from time import time
 import nutpie
 
-start_year = int(sys.argv[1])
-target_dir = sys.argv[2] + "/nutpie_stan"
-seed = int(sys.argv[3])
+if __name__ == "__main__":
+    start_year = int(sys.argv[1])
+    target_dir = sys.argv[2] + "/nutpie_stan"
+    seed = int(sys.argv[3])
 
-os.makedirs(target_dir, exist_ok=True)
+    os.makedirs(target_dir, exist_ok=True)
 
-arrays = create_arrays(start_year=start_year)
+    arrays = create_arrays(start_year=start_year)
 
-start_time = time()
+    start_time = time()
 
-winner_ids = arrays["winner_ids"]
-loser_ids = arrays["loser_ids"]
-player_encoder = arrays["player_encoder"]
+    winner_ids = arrays["winner_ids"]
+    loser_ids = arrays["loser_ids"]
+    player_encoder = arrays["player_encoder"]
 
-compiled = nutpie.compile_stan_model(filename="stan_model_optimised.stan")
+    compiled = nutpie.compile_stan_model(filename="stan_model_optimised.stan")
 
-compiled = compiled.with_data(
-    n_matches=len(winner_ids),
-    n_players=len(player_encoder.classes_),
-    winner_ids=(winner_ids + 1).tolist(),
-    loser_ids=(loser_ids + 1).tolist(),
-)
+    compiled = compiled.with_data(
+        n_matches=len(winner_ids),
+        n_players=len(player_encoder.classes_),
+        winner_ids=(winner_ids + 1).tolist(),
+        loser_ids=(loser_ids + 1).tolist(),
+    )
 
-trace = nutpie.sample(compiled, draws=1000, tune=1000, seed=seed)
+    trace = nutpie.sample(compiled, draws=1000, tune=1000, seed=seed)
 
-runtime = time() - start_time
+    runtime = time() - start_time
 
-trace.to_netcdf(os.path.join(target_dir, f"samples_{start_year}.netcdf"))
-print(runtime, file=open(os.path.join(target_dir, f"runtime_{start_year}.txt"), "w"))
+    trace.to_netcdf(os.path.join(target_dir, f"samples_{start_year}.netcdf"))
+    print(runtime, file=open(os.path.join(target_dir, f"runtime_{start_year}.txt"), "w"))

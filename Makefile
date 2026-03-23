@@ -5,6 +5,9 @@ YEARS = 2020 2019 2015 2010 2000 1990 1980 1968
 PYTHON = uv run python
 DATA_DIR = tennis_atp
 
+export OPENBLAS_NUM_THREADS = 16
+export FLEXIBLAS = OPENBLAS-THREADS
+
 # Methods that take (year, target_dir, seed)
 SIMPLE_METHODS = pymc cmdstanpy nutpie_pymc nutpie_stan
 
