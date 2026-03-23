@@ -15,6 +15,8 @@ for start_year in 2020 2019 2015 2010 2000 1990 1980 1968; do
     # echo "PyMC BlackJAX GPU Parallel env var" && XLA_FLAGS="--xla_force_host_platform_device_count=1" python fit_pymc_blackjax.py $start_year gpu "$target_dir" $random_seed parallel
     echo "PyMC" && python fit_pymc.py $start_year "$target_dir" $random_seed
     echo "cmdstanpy" && python fit_cmdstanpy.py $start_year "$target_dir" $random_seed
+    echo "nutpie (PyMC)" && python fit_nutpie_pymc.py $start_year "$target_dir" $random_seed
+    echo "nutpie (Stan)" && python fit_nutpie_stan.py $start_year "$target_dir" $random_seed
 done
 
 # for start_year in 2020 2019 2015 2010 2000 1990 1980 1968; do

@@ -2,8 +2,8 @@ data {
     int n_matches;
     int n_players;
     
-    int winner_ids[n_matches];
-    int loser_ids[n_matches];
+    array[n_matches] int winner_ids;
+    array[n_matches] int loser_ids;
 }
 parameters {
     vector[n_players] player_skills_raw;

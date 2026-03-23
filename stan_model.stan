@@ -2,11 +2,11 @@ data {
     int n_matches;
     int n_players;
     
-    int winner_ids[n_matches];
-    int loser_ids[n_matches];
+    array[n_matches] int winner_ids;
+    array[n_matches] int loser_ids;
 }
 transformed data {
-    int outcomes[n_matches];
+    array[n_matches] int outcomes;
     outcomes = rep_array(1, n_matches);
 }
 parameters {
