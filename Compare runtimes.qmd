@@ -158,10 +158,11 @@ all_draws = glob(join(run_dir, '*/*.netcdf'))
 
 ```{python}
 def compute_min_ess(arviz_draws):
-    
-    min_ess = az.ess(arviz_draws).min()
-    
-    return float(min_ess.to_array().min().values)
+
+    posterior = arviz_draws.posterior.drop_vars('player_skills', errors='ignore')
+    ess = az.ess(posterior)
+
+    return float(ess.to_array().min().values)
 ```
 
 ```{python}
@@ -224,7 +225,7 @@ plt.savefig(join(plot_dir, 'ess_values.png'), dpi=300)
 ```{python}
 f, ax = plt.subplots(1, 1)
 
-to_plot = rel_results[rel_results['year'] == 1968].sort_values('ESS / second')
+to_plot = rel_results[rel_results['n_matches'] == rel_results['n_matches'].max()].sort_values('ESS / second')
 
 colours_to_plot = [colour_lookup[x] for x in to_plot['method']]
 
@@ -253,7 +254,7 @@ rel['ESS / second'].max() / rel['ESS / second']
 ```{python}
 # Check estimates agree
 
-stan_res = az.from_netcdf(join(run_dir, 'cmdstanpy/samples_1968.netcdf'))
+stan_res = az.from_netcdf(join(run_dir, 'cmdstanpy/samples_1970.netcdf'))
 ```
 
 ```{python}
@@ -268,7 +269,7 @@ player_sds_stan = p_skills.values.std(axis=(0, 1))
 ```
 
 ```{python}
-pymc3_res = az.from_netcdf(join(run_dir, 'pymc/samples_1968.netcdf'))
+pymc3_res = az.from_netcdf(join(run_dir, 'pymc/samples_1970.netcdf'))
 ```
 
 ```{python}
@@ -277,10 +278,10 @@ p_skills_pymc3_sd = pymc3_res.posterior['player_skills'].std(dim=('chain', 'draw
 ```
 
 ```{python}
-# Load data for 1968 to get player names
-cur_data = create_arrays(1968)
+# Load data for 1970 to get player names
+cur_data = create_arrays(1970)
 
-jax_res = az.from_netcdf(join(run_dir, 'pymc_numpyro_gpu_vectorized/samples_1968.netcdf'))
+jax_res = az.from_netcdf(join(run_dir, 'pymc_numpyro_gpu_vectorized/samples_1970.netcdf'))
 ```
 
 ```{python}

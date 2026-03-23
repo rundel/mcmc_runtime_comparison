@@ -9,6 +9,7 @@ if __name__ == "__main__":
     target_dir = sys.argv[2] + "/nutpie_stan"
     seed = int(sys.argv[3])
     cores = int(sys.argv[4])
+    chains = int(sys.argv[5])
 
     os.makedirs(target_dir, exist_ok=True)
 
@@ -29,7 +30,7 @@ if __name__ == "__main__":
         loser_ids=(loser_ids + 1).tolist(),
     )
 
-    trace = nutpie.sample(compiled, draws=1000, tune=1000, chains=4, cores=cores, seed=seed)
+    trace = nutpie.sample(compiled, draws=1000, tune=1000, chains=chains, cores=cores, seed=seed)
 
     runtime = time() - start_time
 

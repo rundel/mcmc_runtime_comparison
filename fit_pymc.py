@@ -9,6 +9,7 @@ if __name__ == "__main__":
     target_dir = sys.argv[2] + "/pymc"
     seed = int(sys.argv[3])
     cores = int(sys.argv[4])
+    chains = int(sys.argv[5])
 
     os.makedirs(target_dir, exist_ok=True)
 
@@ -20,6 +21,7 @@ if __name__ == "__main__":
         hierarchical_trace = pm.sample(
             1000,
             tune=1000,
+            chains=chains,
             cores=cores,
             return_inferencedata=True,
             compute_convergence_checks=False,

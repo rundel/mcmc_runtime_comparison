@@ -11,6 +11,7 @@ if __name__ == "__main__":
     target_dir = sys.argv[2] + "/cmdstanpy"
     seed = int(sys.argv[3])
     cores = int(sys.argv[4])
+    chains = int(sys.argv[5])
 
     os.makedirs(target_dir, exist_ok=True)
 
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     model = CmdStanModel(stan_file="stan_model_optimised.stan")
     model.compile()
 
-    fit = model.sample(data=stan_data, parallel_chains=cores, seed=seed)
+    fit = model.sample(data=stan_data, chains=chains, parallel_chains=cores, seed=seed)
 
     runtime = time() - start_time
 

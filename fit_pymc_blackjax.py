@@ -1,8 +1,17 @@
 import sys
 import os
-import pymc.sampling_jax
+
+# Must be set before JAX is imported
+if len(sys.argv) > 2:
+    if sys.argv[2] == "cpu":
+        os.environ["JAX_PLATFORMS"] = "cpu"
+        # Expose enough virtual CPU devices for parallel chains
+        if len(sys.argv) > 6 and sys.argv[5] == "parallel":
+            os.environ["XLA_FLAGS"] = f"--xla_force_host_platform_device_count={sys.argv[6]}"
+
 from fetch_data import get_pymc_model
 from time import time
+import jax
 import pymc as pm
 
 if __name__ == "__main__":
@@ -12,12 +21,16 @@ if __name__ == "__main__":
     seed = int(sys.argv[4])
     chain_method = sys.argv[5]
     cores = int(sys.argv[6])
+    chains = int(sys.argv[7])
 
     assert platform in ["cpu", "gpu"]
 
-    if platform == "cpu":
-        # Disable GPU
-        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    # For GPU parallel, cap chains to available device count
+    if platform == "gpu" and chain_method == "parallel":
+        available = jax.local_device_count()
+        if chains > available:
+            print(f"Warning: requested {chains} chains but only {available} GPU(s) available; capping to {available}.")
+            chains = available
 
     target_dir = f"{base_dir}/pymc_blackjax_{platform}_{chain_method}"
 
@@ -28,9 +41,11 @@ if __name__ == "__main__":
     start_time = time()
 
     with model:
-        hierarchical_trace = pymc.sampling_jax.sample_blackjax_nuts(
-            chains=cores, random_seed=seed, chain_method=chain_method,
-            idata_kwargs={'log_likelihood': False})
+        hierarchical_trace = pm.sample(
+            nuts_sampler="blackjax", chains=chains, random_seed=seed,
+            nuts_sampler_kwargs={"chain_method": chain_method},
+            idata_kwargs={'log_likelihood': False},
+            progressbar=chain_method != "vectorized")
 
     runtime = time() - start_time
 
