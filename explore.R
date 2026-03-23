@@ -77,3 +77,33 @@ dir.create("plots", showWarnings = FALSE)
 
 ggsave("plots/runtime_linear.png", g, width = 10, height = 6)
 ggsave("plots/runtime_log.png",    g + scale_y_log10(), width = 10, height = 6)
+
+numpyro_gpu = runtimes |>
+  filter(framework == "NumPyro (GPU)") |>
+  select(n_games, numpyro_gpu_runtime = runtime)
+
+runtimes_rel = runtimes |>
+  left_join(numpyro_gpu, by = "n_games") |>
+  mutate(relative_runtime = runtime / numpyro_gpu_runtime)
+
+runtimes_rel_end = runtimes_rel |>
+  slice_max(n_games, by = framework)
+
+g_rel = ggplot(runtimes_rel, aes(x = n_games, y = relative_runtime, color = framework, group = framework)) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
+  geom_line(linewidth = 1) +
+  geom_point(alpha = 0.4, size = 2) +
+  ggrepel::geom_text_repel(
+    data = runtimes_rel_end, aes(x = x_max, label = framework),
+    hjust = 0, direction = "y", segment.color = NA,
+    xlim = c(x_max * 1.01, Inf)
+  ) +
+  coord_cartesian(clip = "off") +
+  labs(x = "Number of matches", y = "Runtime relative to NumPyro (GPU)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.margin = margin(5.5, 120, 5.5, 5.5)
+  )
+
+ggsave("plots/runtime_relative.png", g_rel, width = 10, height = 6)

@@ -25,7 +25,7 @@ BLACKJAX_TARGETS = $(foreach c,$(BLACKJAX_CONFIGS),$(foreach y,$(YEARS),$(TARGET
 
 ALL_TARGETS = $(SIMPLE_TARGETS) $(NUMPYRO_TARGETS) $(BLACKJAX_TARGETS)
 
-PLOTS = plots/runtime_linear.png plots/runtime_log.png
+PLOTS = plots/runtime_linear.png plots/runtime_log.png plots/runtime_relative.png
 
 .PHONY: all clean
 
