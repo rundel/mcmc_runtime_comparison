@@ -25,9 +25,14 @@ BLACKJAX_TARGETS = $(foreach c,$(BLACKJAX_CONFIGS),$(foreach y,$(YEARS),$(TARGET
 
 ALL_TARGETS = $(SIMPLE_TARGETS) $(NUMPYRO_TARGETS) $(BLACKJAX_TARGETS)
 
+PLOTS = plots/runtime_linear.png plots/runtime_log.png
+
 .PHONY: all clean
 
-all: $(ALL_TARGETS)
+all: $(PLOTS)
+
+$(PLOTS): explore.R $(ALL_TARGETS)
+	Rscript explore.R
 
 $(DATA_DIR):
 	git clone --depth 1 https://github.com/JeffSackmann/tennis_atp.git $@
