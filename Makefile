@@ -4,7 +4,7 @@ YEARS = 2020 2019 2015 2010 2000 1990 1980 1968
 
 PYTHON = uv run python
 DATA_DIR = tennis_atp
-CORES = 16
+CORES = 4
 
 # Methods that take (year, target_dir, seed)
 SIMPLE_METHODS = pymc cmdstanpy nutpie_pymc nutpie_stan
