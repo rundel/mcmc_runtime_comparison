@@ -11,6 +11,7 @@ if __name__ == "__main__":
     base_dir = sys.argv[3]
     seed = int(sys.argv[4])
     chain_method = sys.argv[5]
+    cores = int(sys.argv[6])
 
     assert platform in ["cpu", "gpu"]
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
 
     with model:
         hierarchical_trace = pymc.sampling_jax.sample_blackjax_nuts(
-            random_seed=seed, chain_method=chain_method,
+            chains=cores, random_seed=seed, chain_method=chain_method,
             idata_kwargs={'log_likelihood': False})
 
     runtime = time() - start_time

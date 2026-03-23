@@ -40,7 +40,7 @@ define simple_rule
 $(TARGET_DIR)/$(1)/runtime_%.txt: fit_$(1).py fetch_data.py sackmann.py | $(DATA_DIR)
 	@echo "Fitting $(1) $$*"
 	@mkdir -p $(TARGET_DIR)/$(1)
-	$(PYTHON) fit_$(1).py $$* $(TARGET_DIR) $(RANDOM_SEED)
+	$(PYTHON) fit_$(1).py $$* $(TARGET_DIR) $(RANDOM_SEED) $(CORES)
 endef
 
 $(foreach m,$(SIMPLE_METHODS),$(eval $(call simple_rule,$(m))))
@@ -50,7 +50,7 @@ define numpyro_rule
 $(TARGET_DIR)/pymc_numpyro_$(1)_$(2)/runtime_%.txt: fit_pymc_numpyro.py fetch_data.py sackmann.py | $(DATA_DIR)
 	@echo "Fitting pymc_numpyro $(1) $(2) $$*"
 	@mkdir -p $(TARGET_DIR)/pymc_numpyro_$(1)_$(2)
-	$(PYTHON) fit_pymc_numpyro.py $$* $(1) $(2) $(TARGET_DIR) $(RANDOM_SEED)
+	$(PYTHON) fit_pymc_numpyro.py $$* $(1) $(2) $(TARGET_DIR) $(RANDOM_SEED) $(CORES)
 endef
 
 $(foreach p,gpu cpu,$(foreach c,parallel vectorized,$(eval $(call numpyro_rule,$(p),$(c)))))
@@ -60,7 +60,7 @@ define blackjax_rule
 $(TARGET_DIR)/pymc_blackjax_$(1)_$(2)/runtime_%.txt: fit_pymc_blackjax.py fetch_data.py sackmann.py | $(DATA_DIR)
 	@echo "Fitting pymc_blackjax $(1) $(2) $$*"
 	@mkdir -p $(TARGET_DIR)/pymc_blackjax_$(1)_$(2)
-	$(PYTHON) fit_pymc_blackjax.py $$* $(1) $(TARGET_DIR) $(RANDOM_SEED) $(2)
+	$(PYTHON) fit_pymc_blackjax.py $$* $(1) $(TARGET_DIR) $(RANDOM_SEED) $(2) $(CORES)
 endef
 
 $(foreach p,gpu cpu,$(foreach c,parallel vectorized,$(eval $(call blackjax_rule,$(p),$(c)))))
