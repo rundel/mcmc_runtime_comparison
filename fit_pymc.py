@@ -8,6 +8,7 @@ if __name__ == "__main__":
     start_year = int(sys.argv[1])
     target_dir = sys.argv[2] + "/pymc"
     seed = int(sys.argv[3])
+    cores = int(sys.argv[4])
 
     os.makedirs(target_dir, exist_ok=True)
 
@@ -19,6 +20,7 @@ if __name__ == "__main__":
         hierarchical_trace = pm.sample(
             1000,
             tune=1000,
+            cores=cores,
             return_inferencedata=True,
             compute_convergence_checks=False,
             random_seed=seed,
