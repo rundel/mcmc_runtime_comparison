@@ -6,3 +6,5 @@ plots/
 Compare runtimes_files/
 Compare runtimes.html
 .claude/
+stan_model_optimised
+stan_model_optimised.hpp
