@@ -29,7 +29,7 @@ if __name__ == "__main__":
         loser_ids=(loser_ids + 1).tolist(),
     )
 
-    trace = nutpie.sample(compiled, draws=1000, tune=1000, chains=cores, cores=cores, seed=seed)
+    trace = nutpie.sample(compiled, draws=1000, tune=1000, chains=4, cores=cores, seed=seed)
 
     runtime = time() - start_time
 
